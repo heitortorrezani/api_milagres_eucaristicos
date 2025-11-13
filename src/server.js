@@ -41,7 +41,7 @@ app.post("/email", async (req, res) => {
         }
 
         const result = await db.postEmail(email);
-        res.status(201).json(await db.getEmail);
+        res.status(201).json(result);
     } catch (error) {
         console.error('Erro na rota POST /email:', error);
         res.status(500).json({ 
@@ -51,7 +51,6 @@ app.post("/email", async (req, res) => {
     }
 });
 
-// Tratamento de erro para rotas não encontradas
 app.use((req, res) => {
     res.status(404).json({ error: "Rota não encontrada" });
 });
@@ -60,10 +59,3 @@ app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
 
-
-//
-//INSERT INTO tb_usuarios (email)
-//VALUES (
-// 'gabriel@gmail.com'
-//)
-//
