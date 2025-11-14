@@ -44,14 +44,27 @@ async function postEmail(email) {
         const pool = await connect();
         const query = "INSERT INTO tb_usuarios (email) VALUES ($1) RETURNING *";
         const result = await pool.query(query, [email]);
-        return result.rows[0];
+
     } catch (error) {
         console.error('Erro ao inserir email:', error.message);
         throw error;
     }
 }
 
+async function delEmail(id) {
+    try {
+        const pool = await connect();
+        const query = "DELETE FROM tb_usuarios WHERE id = $1 RETURNING *";
+        const result = await pool.query(query, [id]);
+        
+    } catch (error) {
+        console.error('Erro ao inserir id:', error.message);
+        throw error;
+    }
+}
+
 module.exports = {
     getEmail,
-    postEmail
+    postEmail,
+    delEmail
 }

@@ -2,16 +2,21 @@ const path = require('path');
 require("dotenv").config({ path: path.resolve(__dirname, '../.env') });
 
 const db = require("./db");
+
+const cors = require("cors");
+
 const express = require("express");
 
 const app = express();
 
-// Middleware para processar JSON
 app.use(express.json());
+
+app.use(cors());
+
+app.use(express.static(path.join(__dirname, 'landing_page_milagres_eucaristicosgi/build/web')));
 
 const port = process.env.PORT || 3000;
 
-// Rota de verificação de saúde do servidor
 app.get("/", (req, res) => {
     res.json({ status: "OK", message: "Servidor está funcionando!" });
 });
@@ -29,6 +34,27 @@ app.get("/email", async (req, res) => {
     }
 });
 
+app.delete("/email", async (req, res) => {
+    try {
+        const { ID } = req.body;
+
+        if(!ID) {
+            return res.status(400).json ({
+                error: "dados inválidos",
+                message: "o campo ID é obrigatorio!"
+            })
+        }
+
+        const result = await db.delEmail(ID);
+        res.status(200).json(result);
+    } catch (e) {
+        res.status(500).json({
+            error: "erro",
+            message: e.message
+        })
+    }
+});
+
 app.post("/email", async (req, res) => {
     try {
         const { email } = req.body;
@@ -36,7 +62,7 @@ app.post("/email", async (req, res) => {
         if (!email) {
             return res.status(400).json({ 
                 error: "Dados inválidos",
-                message: "O campo email é obrigatório"
+                message: "O campo email é obrigatório!"
             });
         }
 
